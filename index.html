@@ -272,6 +272,21 @@
     .breathe {
       animation: breathe 1.8s ease-in-out infinite;
     }
+body::before,
+body::after {
+  pointer-events: none;
+}
+
+.scanline-box::after {
+  pointer-events: none;
+  z-index: 0;
+}
+
+.scanline-box > * {
+  position: relative;
+  z-index: 1;
+}
+    
   </style>
 </head>
 
@@ -403,7 +418,7 @@
             </div>
           </div>
 
-        <button id="cleanButton" class="breathe relative z-50 mt-5 w-full cursor-pointer touch-manipulation select-none rounded-2xl border border-cyan-300/30 bg-cyan-300/10 px-5 py-3 text-sm font-semibold text-cyanx shadow-glow transition active:scale-95 hover:bg-cyan-300/15">
+        <button id="cleanButton" type="button" class="breathe relative z-[999] mt-5 w-full cursor-pointer pointer-events-auto touch-manipulation select-none transform-gpu rounded-2xl border border-cyan-300/30 bg-cyan-300/10 px-5 py-3 text-sm font-semibold text-cyanx shadow-glow transition active:scale-95 hover:bg-cyan-300/15">
   ▶ 运行自动化清洗脚本 (9x提效)
         </button>
         </section>
@@ -414,10 +429,10 @@
           <p class="mt-4 text-sm leading-7 text-slate-400">点击工具按钮，查看 AI 在真实人才发展项目中的调用日志。</p>
 
           <div class="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
-            <button class="terminal-tool relative z-50 cursor-pointer touch-manipulation select-none rounded-2xl border border-cyan-300/20 bg-white/[.035] px-3 py-2 font-mono text-xs text-cyanx transition active:scale-95 hover:bg-cyan-300/10" data-tool="deepseek">DeepSeek</button>
-            <button class="terminal-tool relative z-50 cursor-pointer touch-manipulation select-none rounded-2xl border border-cyan-300/20 bg-white/[.035] px-3 py-2 font-mono text-xs text-cyanx transition active:scale-95 hover:bg-cyan-300/10" data-tool="anygen">Anygen</button>
-            <button class="terminal-tool relative z-50 cursor-pointer touch-manipulation select-none rounded-2xl border border-cyan-300/20 bg-white/[.035] px-3 py-2 font-mono text-xs text-cyanx transition active:scale-95 hover:bg-cyan-300/10" data-tool="gemini">Gemini</button>
-            <button class="terminal-tool relative z-50 cursor-pointer touch-manipulation select-none rounded-2xl border border-cyan-300/20 bg-white/[.035] px-3 py-2 font-mono text-xs text-cyanx transition active:scale-95 hover:bg-cyan-300/10" data-tool="workbuddy">Workbuddy</button>
+            <button type="button" class="terminal-tool relative z-[999] cursor-pointer pointer-events-auto touch-manipulation select-none transform-gpu rounded-2xl border border-cyan-300/20 bg-white/[.035] px-3 py-2 font-mono text-xs text-cyanx transition active:scale-95 hover:bg-cyan-300/10" data-tool="deepseek">DeepSeek</button>
+            <button type="button" class="terminal-tool relative z-[999] cursor-pointer pointer-events-auto touch-manipulation select-none transform-gpu rounded-2xl border border-cyan-300/20 bg-white/[.035] px-3 py-2 font-mono text-xs text-cyanx transition active:scale-95 hover:bg-cyan-300/10" data-tool="anygen">Anygen</button>
+            <button type="button" class="terminal-tool relative z-[999] cursor-pointer pointer-events-auto touch-manipulation select-none transform-gpu rounded-2xl border border-cyan-300/20 bg-white/[.035] px-3 py-2 font-mono text-xs text-cyanx transition active:scale-95 hover:bg-cyan-300/10" data-tool="gemini">Gemini</button>
+            <button type="button" class="terminal-tool relative z-[999] cursor-pointer pointer-events-auto touch-manipulation select-none transform-gpu rounded-2xl border border-cyan-300/20 bg-white/[.035] px-3 py-2 font-mono text-xs text-cyanx transition active:scale-95 hover:bg-cyan-300/10" data-tool="workbuddy">Workbuddy</button>
           </div>
 
           <div class="scanline-box mt-5 min-h-[366px] rounded-2xl border border-white/10 bg-slate-950/75 p-4 shadow-inner">
@@ -658,242 +673,285 @@
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      let spotlightFrame = null;
-      let pendingMouse = { x: window.innerWidth / 2, y: window.innerHeight * 0.12 };
+  document.addEventListener('DOMContentLoaded', () => {
+    let spotlightFrame = null;
+    let pendingMouse = { x: window.innerWidth / 2, y: window.innerHeight * 0.12 };
 
-      function updateSpotlight() {
-        document.documentElement.style.setProperty('--mouse-x', `${pendingMouse.x}px`);
-        document.documentElement.style.setProperty('--mouse-y', `${pendingMouse.y}px`);
-        spotlightFrame = null;
+    function updateSpotlight() {
+      document.documentElement.style.setProperty('--mouse-x', `${pendingMouse.x}px`);
+      document.documentElement.style.setProperty('--mouse-y', `${pendingMouse.y}px`);
+      spotlightFrame = null;
+    }
+
+    window.addEventListener('mousemove', (event) => {
+      pendingMouse = { x: event.clientX, y: event.clientY };
+      if (!spotlightFrame) {
+        spotlightFrame = requestAnimationFrame(updateSpotlight);
       }
+    }, { passive: true });
 
-      window.addEventListener('mousemove', (event) => {
-        pendingMouse = { x: event.clientX, y: event.clientY };
-        if (!spotlightFrame) {
-          spotlightFrame = requestAnimationFrame(updateSpotlight);
+    const revealTargets = document.querySelectorAll('#strength article, #projects article, #gallery figure');
+    revealTargets.forEach((element, index) => {
+      element.classList.add('reveal');
+      element.style.transitionDelay = `${Math.min(index % 4, 3) * 90}ms`;
+    });
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
         }
-      }, { passive: true });
-
-      const revealTargets = document.querySelectorAll('#strength article, #projects article, #gallery figure');
-      revealTargets.forEach((element, index) => {
-        element.classList.add('reveal');
-        element.style.transitionDelay = `${Math.min(index % 4, 3) * 90}ms`;
       });
+    }, {
+      threshold: 0.16,
+      rootMargin: '0px 0px -8% 0px'
+    });
 
-      const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            revealObserver.unobserve(entry.target);
-          }
-        });
-      }, {
-        threshold: 0.16,
-        rootMargin: '0px 0px -8% 0px'
-      });
+    revealTargets.forEach((element) => revealObserver.observe(element));
 
-      revealTargets.forEach((element) => revealObserver.observe(element));
+    const counters = document.querySelectorAll('.counter');
+    const counterDuration = 1000;
+    const easeOutCubic = (value) => 1 - Math.pow(1 - value, 3);
 
-      const counters = document.querySelectorAll('.counter');
-      const counterDuration = 1000;
-      const easeOutCubic = (value) => 1 - Math.pow(1 - value, 3);
+    counters.forEach((counter) => {
+      const target = Number(counter.dataset.target || 0);
+      const startTime = performance.now();
 
-      counters.forEach((counter) => {
-        const target = Number(counter.dataset.target || 0);
-        const startTime = performance.now();
+      function updateCounter(now) {
+        const progress = Math.min((now - startTime) / counterDuration, 1);
+        const eased = easeOutCubic(progress);
+        counter.textContent = Math.round(target * eased);
 
-        function updateCounter(now) {
-          const progress = Math.min((now - startTime) / counterDuration, 1);
-          const eased = easeOutCubic(progress);
-          counter.textContent = Math.round(target * eased);
-
-          if (progress < 1) {
-            requestAnimationFrame(updateCounter);
-          } else {
-            counter.textContent = target;
-            const counterShell = counter.closest('p');
-            if (counterShell) {
-              counterShell.classList.add('counter-pulse');
-              setTimeout(() => counterShell.classList.remove('counter-pulse'), 760);
-            }
-          }
-        }
-
-        requestAnimationFrame(updateCounter);
-      });
-
-      const cleanButton = document.getElementById('cleanButton');
-      const dataBox = document.getElementById('dataBox');
-      const messyData = document.getElementById('messyData');
-      const cleanTable = document.getElementById('cleanTable');
-      const cleanStatus = document.getElementById('cleanStatus');
-
-      cleanButton.addEventListener('click', () => {
-        dataBox.classList.add('is-changing');
-        cleanButton.disabled = true;
-        cleanButton.textContent = '正在清洗原始数据...';
-        setTimeout(() => {
-          messyData.classList.add('hidden');
-          cleanTable.classList.remove('hidden');
-          cleanStatus.classList.remove('hidden');
-          dataBox.classList.remove('is-changing');
-          cleanButton.textContent = '✓ 清洗完成：已生成标准数据表';
-          cleanButton.classList.remove('breathe');
-        }, 520);
-      });
-
-      const terminalOutput = document.getElementById('terminalOutput');
-      const terminalButtons = document.querySelectorAll('.terminal-tool');
-      let terminalTimer = null;
-      const terminalScripts = {
-        deepseek: [
-          '[Sys] 接入干部健康运营模块...',
-          '[Log] 读取 43 支战队原始运动里程数据...',
-          '[Log] 自动生成并运行 Python 数据清洗脚本...',
-          '[Output] 剔除无效数据，格式化完成。提效 900%（传统耗时天级 -> 现耗时秒级）。'
-        ],
-        anygen: [
-          '[Sys] 唤醒视觉引擎...',
-          '[Log] 渲染 5月17日 春季 MINI 马拉松海报...',
-          '[Log] 渲染 干部习武全年健康运营主 KV...',
-          '[Output] 设计验收通过。外采成本：0 元。'
-        ],
-        gemini: [
-          '[Sys] 启动项目策划辅助模式...',
-          '[Log] 自动生成 6月 HR 内部赋能分享《我常用的 AI 武器库》逐字稿...',
-          '[Log] 规划 7月 DOD26 项目 Day 2 的 AI Mini Hackathon 赛制细则...',
-          '[Output] 逻辑树构建完毕，方案已保存。'
-        ],
-        workbuddy: [
-          '[Sys] 追踪集团 AI 赋能实战转化进度...',
-          '[Log] 扫描“学、练、评、赛”闭环数据...',
-          '[Output] 当前学习总人次：23,576。1000+ 智能体矩阵运行良好。'
-        ]
-      };
-
-      function terminalStamp() {
-        return new Date().toLocaleTimeString('zh-CN', { hour12: false });
-      }
-
-      function runTerminal(lines) {
-        clearTimeout(terminalTimer);
-        terminalOutput.classList.remove('terminal-cursor');
-        terminalOutput.textContent = '';
-        let lineIndex = 0;
-        let charPosition = 0;
-        let output = '';
-
-        function typeLine() {
-          const currentLine = lines[lineIndex];
-          const prefix = `[${terminalStamp()}] `;
-          terminalOutput.textContent = output + prefix + currentLine.slice(0, charPosition);
-          charPosition++;
-          if (charPosition <= currentLine.length) {
-            terminalTimer = setTimeout(typeLine, 22);
-            return;
-          }
-          output += prefix + currentLine + '\n';
-          lineIndex++;
-          charPosition = 0;
-          if (lineIndex < lines.length) {
-            terminalTimer = setTimeout(typeLine, 360);
-          } else {
-            terminalOutput.classList.add('terminal-cursor');
-          }
-        }
-
-        typeLine();
-      }
-
-      terminalButtons.forEach((button) => {
-        button.addEventListener('click', () => {
-          terminalButtons.forEach((item) => item.classList.remove('bg-cyan-300/15', 'text-white'));
-          button.classList.add('bg-cyan-300/15', 'text-white');
-          runTerminal(terminalScripts[button.dataset.tool]);
-        });
-      });
-
-      const chatPanel = document.getElementById('aiChatPanel');
-      const openChat = document.getElementById('openChat');
-      const closeChat = document.getElementById('closeChat');
-      const chatMessages = document.getElementById('chatMessages');
-      const chatPromptsBox = document.getElementById('chatPrompts');
-      const chatPrompts = document.querySelectorAll('.chat-prompt');
-      const companyName = new URLSearchParams(window.location.search).get('company');
-      let chatTimer = null;
-      let chatInitialized = false;
-
-      const chatAnswers = {
-        core: '杨慧的核心竞争力是“人才发展专业能力 + 一线业务理解 + AI 工具链实战”的复合组合。她既能从 COE 视角设计培养体系、项目机制和组织能力模型，也能基于 HRBP 轮岗经验理解业务现场真实痛点。更关键的是，她能把 AI 从概念转化为业务结果：数据清洗提效 9 倍、视觉物料 0 成本生成、共学共创推动 23,576 学习人次并创建 1000+ 智能体。',
-        cocreation: '杨慧避开空洞的战略宏观推演，专注于业务推广与 AI 实战转化，最终构建了学练评赛闭环，推动近万名员工落地，创建 1000+ 智能体。项目过程中，她通过 AI 智能初评解决万人作业评审难题，并沉淀 1,194 份业务案例，让隐性知识显性化，形成可复用的组织资产。',
-        zero: '零成本视觉设计来自她对 Anygen、即梦等 AI 视觉工具的系统化调教。她会把项目目标、传播场景、视觉风格、关键词和构图要求拆成可执行提示词，再持续迭代主 KV、跑团海报和活动物料，最终直接减少外部采购成本，同时保证项目传播节奏足够敏捷。'
-      };
-
-      function appendChatMessage(text, role) {
-        const message = document.createElement('div');
-        message.className = role === 'user'
-          ? 'ml-auto max-w-[86%] rounded-2xl border border-white/10 bg-white/[.06] p-3 text-slate-100'
-          : 'max-w-[92%] rounded-2xl border border-cyan-300/15 bg-cyan-300/[.06] p-3 text-slate-300';
-        message.textContent = text;
-        chatMessages.appendChild(message);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-        return message;
-      }
-
-      function typeChatAnswer(text, onDone) {
-        clearTimeout(chatTimer);
-        const message = appendChatMessage('', 'assistant');
-        let index = 0;
-
-        function typeNext() {
-          message.textContent = text.slice(0, index);
-          chatMessages.scrollTop = chatMessages.scrollHeight;
-          index++;
-          if (index <= text.length) {
-            chatTimer = setTimeout(typeNext, 24);
-          } else if (onDone) {
-            onDone();
-          }
-        }
-
-        typeNext();
-      }
-
-      function initializeChat() {
-        if (chatInitialized) return;
-        chatInitialized = true;
-        chatMessages.innerHTML = '';
-        chatPromptsBox.classList.add('hidden');
-
-        if (companyName) {
-          typeChatAnswer(`> [System] 检测到来自【${companyName}】的访问。正在为您匹配杨慧在组织敏捷赋能方面的实战案例...`, () => {
-            setTimeout(() => chatPromptsBox.classList.remove('hidden'), 500);
-          });
+        if (progress < 1) {
+          requestAnimationFrame(updateCounter);
         } else {
-          appendChatMessage('你好，我是杨慧的 AI 面试助理。你可以快速了解她在 AI+HR、项目运营、数据提效方面的真实成果。', 'assistant');
-          chatPromptsBox.classList.remove('hidden');
+          counter.textContent = target;
+          const counterShell = counter.closest('p');
+          if (counterShell) {
+            counterShell.classList.add('counter-pulse');
+            setTimeout(() => counterShell.classList.remove('counter-pulse'), 760);
+          }
         }
       }
 
-      openChat.addEventListener('click', () => {
-        chatPanel.classList.toggle('is-hidden');
-        if (!chatPanel.classList.contains('is-hidden')) {
-          initializeChat();
+      requestAnimationFrame(updateCounter);
+    });
+
+    function bindInstantTap(element, handler) {
+      let lastTouchTime = 0;
+      let locked = false;
+
+      function run(event, fromTouch) {
+        if (locked) return;
+        locked = true;
+
+        if (fromTouch) {
+          lastTouchTime = Date.now();
+          event.preventDefault();
+        } else if (Date.now() - lastTouchTime < 700) {
+          locked = false;
+          return;
         }
-      });
 
-      closeChat.addEventListener('click', () => {
-        chatPanel.classList.add('is-hidden');
-      });
+        event.stopPropagation();
+        handler(event);
 
-      chatPrompts.forEach((button) => {
-        button.addEventListener('click', () => {
-          appendChatMessage(button.textContent, 'user');
-          typeChatAnswer(chatAnswers[button.dataset.question]);
-        });
+        setTimeout(() => {
+          locked = false;
+        }, 120);
+      }
+
+      element.addEventListener('touchstart', (event) => {
+        run(event, true);
+      }, { passive: false });
+
+      element.addEventListener('click', (event) => {
+        run(event, false);
+      });
+    }
+
+    const cleanButton = document.getElementById('cleanButton');
+    const dataBox = document.getElementById('dataBox');
+    const messyData = document.getElementById('messyData');
+    const cleanTable = document.getElementById('cleanTable');
+    const cleanStatus = document.getElementById('cleanStatus');
+
+    bindInstantTap(cleanButton, () => {
+      if (cleanButton.disabled) return;
+
+      dataBox.classList.add('is-changing');
+      cleanButton.disabled = true;
+      cleanButton.textContent = '正在清洗原始数据...';
+
+      setTimeout(() => {
+        messyData.classList.add('hidden');
+        cleanTable.classList.remove('hidden');
+        cleanStatus.classList.remove('hidden');
+        dataBox.classList.remove('is-changing');
+        cleanButton.textContent = '✓ 清洗完成：已生成标准数据表';
+        cleanButton.classList.remove('breathe');
+      }, 520);
+    });
+
+    const terminalOutput = document.getElementById('terminalOutput');
+    const terminalButtons = document.querySelectorAll('.terminal-tool');
+    let terminalTimer = null;
+
+    const terminalScripts = {
+      deepseek: [
+        '[Sys] 接入干部健康运营模块...',
+        '[Log] 读取 43 支战队原始运动里程数据...',
+        '[Log] 自动生成并运行 Python 数据清洗脚本...',
+        '[Output] 剔除无效数据，格式化完成。提效 900%（传统耗时天级 -> 现耗时秒级）。'
+      ],
+      anygen: [
+        '[Sys] 唤醒视觉引擎...',
+        '[Log] 渲染 5月17日 春季 MINI 马拉松海报...',
+        '[Log] 渲染 干部习武全年健康运营主 KV...',
+        '[Output] 设计验收通过。外采成本：0 元。'
+      ],
+      gemini: [
+        '[Sys] 启动项目策划辅助模式...',
+        '[Log] 自动生成 6月 HR 内部赋能分享《我常用的 AI 武器库》逐字稿...',
+        '[Log] 规划 7月 DOD26 项目 Day 2 的 AI Mini Hackathon 赛制细则...',
+        '[Output] 逻辑树构建完毕，方案已保存。'
+      ],
+      workbuddy: [
+        '[Sys] 追踪集团 AI 赋能实战转化进度...',
+        '[Log] 扫描“学、练、评、赛”闭环数据...',
+        '[Output] 当前学习总人次：23,576。1000+ 智能体矩阵运行良好。'
+      ]
+    };
+
+    function terminalStamp() {
+      return new Date().toLocaleTimeString('zh-CN', { hour12: false });
+    }
+
+    function runTerminal(lines) {
+      clearTimeout(terminalTimer);
+      terminalOutput.classList.remove('terminal-cursor');
+      terminalOutput.textContent = '';
+
+      let lineIndex = 0;
+      let charPosition = 0;
+      let output = '';
+
+      function typeLine() {
+        const currentLine = lines[lineIndex];
+        const prefix = `[${terminalStamp()}] `;
+        terminalOutput.textContent = output + prefix + currentLine.slice(0, charPosition);
+        charPosition++;
+
+        if (charPosition <= currentLine.length) {
+          terminalTimer = setTimeout(typeLine, 22);
+          return;
+        }
+
+        output += prefix + currentLine + '\n';
+        lineIndex++;
+        charPosition = 0;
+
+        if (lineIndex < lines.length) {
+          terminalTimer = setTimeout(typeLine, 360);
+        } else {
+          terminalOutput.classList.add('terminal-cursor');
+        }
+      }
+
+      typeLine();
+    }
+
+    terminalButtons.forEach((button) => {
+      bindInstantTap(button, () => {
+        terminalButtons.forEach((item) => item.classList.remove('bg-cyan-300/15', 'text-white'));
+        button.classList.add('bg-cyan-300/15', 'text-white');
+        runTerminal(terminalScripts[button.dataset.tool]);
       });
     });
-  </script>
+
+    const chatPanel = document.getElementById('aiChatPanel');
+    const openChat = document.getElementById('openChat');
+    const closeChat = document.getElementById('closeChat');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatPromptsBox = document.getElementById('chatPrompts');
+    const chatPrompts = document.querySelectorAll('.chat-prompt');
+    const companyName = new URLSearchParams(window.location.search).get('company');
+    let chatTimer = null;
+    let chatInitialized = false;
+
+    const chatAnswers = {
+      core: '杨慧的核心竞争力是“人才发展专业能力 + 一线业务理解 + AI 工具链实战”的复合组合。她既能从 COE 视角设计培养体系、项目机制和组织能力模型，也能基于 HRBP 轮岗经验理解业务现场真实痛点。更关键的是，她能把 AI 从概念转化为业务结果：数据清洗提效 9 倍、视觉物料 0 成本生成、共学共创推动 23,576 学习人次并创建 1000+ 智能体。',
+      cocreation: '杨慧避开空洞的战略宏观推演，专注于业务推广与 AI 实战转化，最终构建了学练评赛闭环，推动近万名员工落地，创建 1000+ 智能体。项目过程中，她通过 AI 智能初评解决万人作业评审难题，并沉淀 1,194 份业务案例，让隐性知识显性化，形成可复用的组织资产。',
+      zero: '零成本视觉设计来自她对 Anygen、即梦等 AI 视觉工具的系统化调教。她会把项目目标、传播场景、视觉风格、关键词和构图要求拆成可执行提示词，再持续迭代主 KV、跑团海报和活动物料，最终直接减少外部采购成本，同时保证项目传播节奏足够敏捷。'
+    };
+
+    function appendChatMessage(text, role) {
+      const message = document.createElement('div');
+      message.className = role === 'user'
+        ? 'ml-auto max-w-[86%] rounded-2xl border border-white/10 bg-white/[.06] p-3 text-slate-100'
+        : 'max-w-[92%] rounded-2xl border border-cyan-300/15 bg-cyan-300/[.06] p-3 text-slate-300';
+      message.textContent = text;
+      chatMessages.appendChild(message);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return message;
+    }
+
+    function typeChatAnswer(text, onDone) {
+      clearTimeout(chatTimer);
+      const message = appendChatMessage('', 'assistant');
+      let index = 0;
+
+      function typeNext() {
+        message.textContent = text.slice(0, index);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        index++;
+
+        if (index <= text.length) {
+          chatTimer = setTimeout(typeNext, 24);
+        } else if (onDone) {
+          onDone();
+        }
+      }
+
+      typeNext();
+    }
+
+    function initializeChat() {
+      if (chatInitialized) return;
+
+      chatInitialized = true;
+      chatMessages.innerHTML = '';
+      chatPromptsBox.classList.add('hidden');
+
+      if (companyName) {
+        typeChatAnswer(`> [System] 检测到来自【${companyName}】的访问。正在为您匹配杨慧在组织敏捷赋能方面的实战案例...`, () => {
+          setTimeout(() => chatPromptsBox.classList.remove('hidden'), 500);
+        });
+      } else {
+        appendChatMessage('你好，我是杨慧的 AI 面试助理。你可以快速了解她在 AI+HR、项目运营、数据提效方面的真实成果。', 'assistant');
+        chatPromptsBox.classList.remove('hidden');
+      }
+    }
+
+    openChat.addEventListener('click', () => {
+      chatPanel.classList.toggle('is-hidden');
+      if (!chatPanel.classList.contains('is-hidden')) {
+        initializeChat();
+      }
+    });
+
+    closeChat.addEventListener('click', () => {
+      chatPanel.classList.add('is-hidden');
+    });
+
+    chatPrompts.forEach((button) => {
+      button.addEventListener('click', () => {
+        appendChatMessage(button.textContent, 'user');
+        typeChatAnswer(chatAnswers[button.dataset.question]);
+      });
+    });
+  });
+</script>
 </body>
 </html>
