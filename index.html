@@ -64,4 +64,836 @@
     }
 
     .glass {
-      border: 
+      border: 1px solid rgba(255,255,255,.10);
+      background: linear-gradient(135deg, rgba(255,255,255,.075), rgba(255,255,255,.032));
+      box-shadow: 0 24px 80px rgba(2,6,23,.48), inset 0 1px 0 rgba(255,255,255,.08);
+      backdrop-filter: blur(24px);
+    }
+
+    .cursor-tick::after,
+    .terminal-cursor::after {
+      content: "_";
+      margin-left: 3px;
+      color: #22d3ee;
+      animation: blink .9s infinite;
+    }
+
+    .data-fade {
+      transition: opacity .3s ease, transform .3s ease, filter .3s ease;
+    }
+
+    .data-fade.is-changing {
+      opacity: 0;
+      transform: scale(.985);
+      filter: blur(5px);
+    }
+
+    .marquee-track {
+      width: max-content;
+      animation: marquee 34s linear infinite;
+    }
+
+    .marquee-wrap:hover .marquee-track {
+      animation-play-state: paused;
+    }
+
+    .assistant-ping::before,
+    .assistant-ping::after {
+      content: "";
+      position: absolute;
+      inset: -7px;
+      border-radius: 999px;
+      border: 1px solid rgba(34,211,238,.34);
+      animation: ping-ring 2.2s cubic-bezier(0, 0, .2, 1) infinite;
+      pointer-events: none;
+    }
+
+    .assistant-ping::after {
+      animation-delay: .8s;
+    }
+
+    .chat-pop {
+      transform-origin: bottom right;
+      transition: opacity .22s ease, transform .22s ease;
+    }
+
+    .chat-pop.is-hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px) scale(.96);
+    }
+
+    .prompt-code {
+      display: block;
+      width: 0;
+      max-width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .prompt-card:hover .prompt-code {
+      animation: promptTyping 2.8s steps(96, end) forwards;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(2.5rem);
+      transition:
+        opacity .7s cubic-bezier(.16, 1, .3, 1),
+        transform .7s cubic-bezier(.16, 1, .3, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #strength article,
+    #projects article {
+      transition:
+        transform .45s cubic-bezier(.16, 1, .3, 1),
+        border-color .45s ease,
+        box-shadow .45s ease,
+        background-color .45s ease;
+    }
+
+    #strength article:hover,
+    #projects article:hover {
+      transform: translateY(-.35rem);
+      border-color: rgba(34, 211, 238, .5);
+      box-shadow: 0 0 30px rgba(34,211,238,.15), 0 24px 80px rgba(2,6,23,.48), inset 0 1px 0 rgba(255,255,255,.1);
+    }
+
+    .scanline-box {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scanline-box::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -2px;
+      height: 2px;
+      pointer-events: none;
+      background: rgba(34, 211, 238, .22);
+      box-shadow: 0 0 8px rgba(34, 211, 238, .7);
+      animation: scanlineMove 4.8s linear infinite;
+    }
+
+    .fade-in-up {
+      opacity: 0;
+      animation: fadeInUp .8s cubic-bezier(.16, 1, .3, 1) forwards;
+    }
+
+    .fade-delay-200 {
+      animation-delay: .2s;
+    }
+
+    .fade-delay-400 {
+      animation-delay: .4s;
+    }
+
+    @keyframes blink {
+      0%, 45% { opacity: 1; }
+      46%, 100% { opacity: 0; }
+    }
+
+    @keyframes breathe {
+      0%, 100% { box-shadow: 0 0 22px rgba(34,211,238,.16); }
+      50% { box-shadow: 0 0 44px rgba(34,211,238,.38); }
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    @keyframes ping-ring {
+      0% { opacity: .7; transform: scale(.96); }
+      80%, 100% { opacity: 0; transform: scale(1.16); }
+    }
+
+    @keyframes promptTyping {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes counterPulse {
+      0% {
+        filter: drop-shadow(0 0 0 rgba(34,211,238,0));
+        transform: scale(1);
+      }
+      45% {
+        filter: drop-shadow(0 0 18px rgba(34,211,238,.75));
+        transform: scale(1.045);
+      }
+      100% {
+        filter: drop-shadow(0 0 0 rgba(34,211,238,0));
+        transform: scale(1);
+      }
+    }
+
+    @keyframes scanlineMove {
+      0% {
+        transform: translateY(-12px);
+        opacity: 0;
+      }
+      8% {
+        opacity: .75;
+      }
+      92% {
+        opacity: .55;
+      }
+      100% {
+        transform: translateY(430px);
+        opacity: 0;
+      }
+    }
+
+    .counter-pulse {
+      animation: counterPulse .7s cubic-bezier(.16, 1, .3, 1);
+      transform-origin: left center;
+    }
+
+    .breathe {
+      animation: breathe 1.8s ease-in-out infinite;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen overflow-x-hidden bg-slate-900 font-sans text-slate-100 antialiased">
+  <header class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-slate-950/70 backdrop-blur-xl">
+    <nav class="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 sm:px-6">
+      <a href="#home" class="text-sm font-semibold tracking-[.2em] text-cyanx">杨慧</a>
+      <div class="hidden items-center gap-7 text-sm text-slate-400 md:flex">
+        <a href="#strength" class="transition hover:text-white">核心优势</a>
+        <a href="#demo" class="transition hover:text-white">互动演示</a>
+        <a href="#projects" class="transition hover:text-white">重点项目</a>
+        <a href="#gallery" class="transition hover:text-white">成果可视化</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="relative z-10">
+    <section id="home" class="relative isolate mx-auto max-w-6xl overflow-hidden px-5 pb-14 pt-28 sm:px-6">
+      <div class="pointer-events-none absolute -left-56 top-0 z-0 h-[600px] w-[600px] animate-pulse rounded-full bg-cyan-500/20 blur-[120px]"></div>
+      <div class="pointer-events-none absolute -right-56 top-20 z-0 h-[600px] w-[600px] animate-pulse rounded-full bg-blue-500/20 blur-[120px] [animation-delay:900ms]"></div>
+
+      <div class="relative z-10 flex flex-row items-center justify-center gap-x-16 max-md:flex-col max-md:gap-y-8">
+        <div class="fade-in-up fade-delay-200 flex-1 text-left">
+          <p class="mb-5 text-xs font-medium uppercase tracking-[.34em] text-cyanx/70">AI Enabled Talent Development</p>
+          <h1 class="leading-tight tracking-tight">
+            <span class="block text-4xl font-bold text-white md:text-5xl">杨慧</span>
+            <span class="mt-3 block text-2xl font-medium text-cyan-400 md:text-3xl">人才发展专业经理</span>
+          </h1>
+          <p class="mt-6 max-w-3xl text-base leading-relaxed tracking-wide text-gray-400 md:text-lg">
+            以人才发展专业能力为底座，以 AI 工具流为杠杆，推动组织学习、干部运营与关键岗位培养从项目交付走向可复用的业务能力沉淀。
+          </p>
+        </div>
+
+        <img src="./images/avatar.jpg" alt="杨慧职业形象照" class="h-24 w-24 shrink-0 rounded-full border-2 border-cyan-500/40 object-cover shadow-[0_0_20px_rgba(34,211,238,0.2)] transition-transform hover:scale-105 md:h-28 md:w-28" />
+
+        <div class="fade-in-up fade-delay-400 relative z-10 flex-1 rounded-2xl border border-white/10 bg-white/5 p-6 shadow-[0_0_20px_rgba(34,211,238,0.15)] backdrop-blur-lg transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(34,211,238,0.2)] md:p-8">
+          <div class="divide-y divide-white/10">
+            <div class="py-2.5">
+              <p class="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-3xl font-bold text-transparent md:text-4xl">前<span class="counter" data-target="10">0</span>%</p>
+              <p class="mt-1 text-sm text-gray-400">2025年度绩效A</p>
+            </div>
+            <div class="py-2.5">
+              <p class="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-3xl font-bold text-transparent md:text-4xl"><span class="counter" data-target="9">0</span>倍</p>
+              <p class="mt-1 text-sm text-gray-400">AI 数据运营提效</p>
+            </div>
+            <div class="py-2.5">
+              <p class="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-3xl font-bold text-transparent md:text-4xl"><span class="counter" data-target="0">0</span>成本</p>
+              <p class="mt-1 text-sm text-gray-400">项目视觉物料生成</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="strength" class="mx-auto max-w-6xl px-5 py-20 sm:px-6">
+      <div class="mb-12 max-w-3xl">
+        <p class="text-xs font-medium uppercase tracking-[.32em] text-cyanx/70">Core Strength</p>
+        <h2 class="mt-4 text-3xl font-semibold tracking-[-.025em] text-white sm:text-4xl">核心优势</h2>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <article class="glass rounded-3xl p-6">
+          <p class="font-mono text-xs text-cyanx/60">01</p>
+          <h3 class="mt-5 text-lg font-medium text-white">高绩效与复合视角</h3>
+          <p class="mt-4 text-sm leading-7 text-slate-400">2025年度绩效A/前10%，具备 COE + HRBP 双重视角，兼具体系设计与业务现场理解。</p>
+        </article>
+        <article class="glass rounded-3xl p-6">
+          <p class="font-mono text-xs text-cyanx/60">02</p>
+          <h3 class="mt-5 text-lg font-medium text-white">千人级项目操盘</h3>
+          <p class="mt-4 text-sm leading-7 text-slate-400">擅长关键岗位梯队建设、干部运营与千人级复杂项目闭环管理。</p>
+        </article>
+        <article class="glass rounded-3xl p-6">
+          <p class="font-mono text-xs text-cyanx/60">03</p>
+          <h3 class="mt-5 text-lg font-medium text-white">AI+HR 实战经验</h3>
+          <p class="mt-4 text-sm leading-7 text-slate-400">通过大模型、提示词工程与自动化脚本实现 9 倍提效与 0 成本物料生成。</p>
+        </article>
+        <article class="glass rounded-3xl p-6">
+          <p class="font-mono text-xs text-cyanx/60">04</p>
+          <h3 class="mt-5 text-lg font-medium text-white">知识萃取与讲授</h3>
+          <p class="mt-4 text-sm leading-7 text-slate-400">集团认证讲师，授课满意度 9.76/10，擅长将隐性经验显性化。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="demo" class="mx-auto max-w-6xl px-5 py-20 sm:px-6">
+      <div class="mb-12 max-w-3xl">
+        <p class="text-xs font-medium uppercase tracking-[.32em] text-cyanx/70">Live Proof</p>
+        <h2 class="mt-4 text-3xl font-semibold tracking-[-.025em] text-white sm:text-4xl">AI 实战互动演示</h2>
+      </div>
+
+      <div class="grid gap-6 lg:grid-cols-2">
+        <section class="glass rounded-[2rem] p-6">
+          <p class="text-xs font-medium uppercase tracking-[.26em] text-cyanx/70">9x Efficiency Black Box</p>
+          <h3 class="mt-3 text-2xl font-semibold text-white">9倍提效黑盒</h3>
+          <p class="mt-4 text-sm leading-7 text-slate-400">模拟“干部习武”项目中 43 支战队的原始里程数据清洗过程。</p>
+
+          <div id="cleanStatus" class="mt-5 hidden rounded-2xl border border-emerald-300/20 bg-emerald-300/10 px-4 py-3 font-mono text-sm text-emerald-300">
+            耗时：0.5秒 | 人效提升：900%
+          </div>
+
+          <div id="dataBox" class="scanline-box data-fade mt-5 min-h-[286px] rounded-2xl border border-white/10 bg-slate-950/60 p-4">
+            <div id="messyData" class="font-mono text-sm leading-6 text-green-400">
+              43队|2025-06-01T22:18?? 张敏  1,203.50km<br />
+              战队_07;负责人=李航; 里程: 938km; 完成率? 78%<br />
+              2025/06/02 08:11 王璐### 青蓝先锋队 1302.7 公里<br />
+              A-19 赵晨  里程=1 118.0 KM  完成率 86.4<br />
+              6月03日|星火战队|刘洋|公里数: 1,486; rate=97%<br />
+              raw_43: 吴迪 / 第三事业群 / 884.25 / 未对齐<br />
+              time=23:59; team=北极星; owner=孙悦; total=1566km<br />
+              [重复行?] 战队12 王璐 1302.7km  90%  90 %<br />
+              2025-06-04, TEAM-08, 周宁, 1.209e3km, ok?<br />
+              未命名战队|负责人缺失|999公里|完成率待确认
+            </div>
+            <div id="cleanTable" class="hidden overflow-hidden rounded-2xl border border-cyan-300/20">
+              <table class="w-full text-left text-sm">
+                <thead class="bg-cyan-300/10 text-cyanx">
+                  <tr>
+                    <th class="px-4 py-3 font-medium">战队</th>
+                    <th class="px-4 py-3 font-medium">负责人</th>
+                    <th class="px-4 py-3 font-medium">总里程</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-white/10 text-slate-300">
+                  <tr><td class="px-4 py-3">青蓝先锋队</td><td class="px-4 py-3">王璐</td><td class="px-4 py-3">1,302.7 km</td></tr>
+                  <tr><td class="px-4 py-3">星火战队</td><td class="px-4 py-3">刘洋</td><td class="px-4 py-3">1,486.0 km</td></tr>
+                  <tr><td class="px-4 py-3">北极星战队</td><td class="px-4 py-3">孙悦</td><td class="px-4 py-3">1,566.0 km</td></tr>
+                  <tr><td class="px-4 py-3">战队07</td><td class="px-4 py-3">李航</td><td class="px-4 py-3">938.0 km</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <button id="cleanButton" class="breathe relative z-10 mt-5 w-full cursor-pointer rounded-2xl border border-cyan-300/30 bg-cyan-300/10 px-5 py-3 text-sm font-semibold text-cyanx shadow-glow transition hover:bg-cyan-300/15">
+            ▶ 运行自动化清洗脚本 (9x提效)
+          </button>
+        </section>
+
+        <section class="glass rounded-[2rem] p-6">
+          <p class="text-xs font-medium uppercase tracking-[.26em] text-cyanx/70">AI Toolkit Terminal</p>
+          <h3 class="mt-3 text-2xl font-semibold text-white">AI 武器库终端</h3>
+          <p class="mt-4 text-sm leading-7 text-slate-400">点击工具按钮，查看 AI 在真实人才发展项目中的调用日志。</p>
+
+          <div class="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <button class="terminal-tool relative z-10 cursor-pointer rounded-2xl border border-cyan-300/20 bg-white/[.035] px-3 py-2 font-mono text-xs text-cyanx transition hover:bg-cyan-300/10" data-tool="deepseek">DeepSeek</button>
+            <button class="terminal-tool relative z-10 cursor-pointer rounded-2xl border border-cyan-300/20 bg-white/[.035] px-3 py-2 font-mono text-xs text-cyanx transition hover:bg-cyan-300/10" data-tool="anygen">Anygen</button>
+            <button class="terminal-tool relative z-10 cursor-pointer rounded-2xl border border-cyan-300/20 bg-white/[.035] px-3 py-2 font-mono text-xs text-cyanx transition hover:bg-cyan-300/10" data-tool="gemini">Gemini</button>
+            <button class="terminal-tool relative z-10 cursor-pointer rounded-2xl border border-cyan-300/20 bg-white/[.035] px-3 py-2 font-mono text-xs text-cyanx transition hover:bg-cyan-300/10" data-tool="workbuddy">Workbuddy</button>
+          </div>
+
+          <div class="scanline-box mt-5 min-h-[366px] rounded-2xl border border-white/10 bg-slate-950/75 p-4 shadow-inner">
+            <pre id="terminalOutput" class="terminal-cursor whitespace-pre-wrap break-words font-mono text-xs leading-6 text-emerald-300"></pre>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="experience" class="mx-auto max-w-6xl px-5 py-20 sm:px-6">
+      <div class="grid gap-10 lg:grid-cols-[.72fr_1.28fr]">
+        <div>
+          <p class="text-xs font-medium uppercase tracking-[.32em] text-cyanx/70">Timeline</p>
+          <h2 class="mt-4 text-3xl font-semibold tracking-[-.025em] text-white sm:text-4xl">职业与教育经历</h2>
+        </div>
+        <div class="glass rounded-3xl p-6 sm:p-8">
+          <div class="space-y-8 border-l border-cyan-300/20 pl-6">
+            <div class="relative">
+              <span class="absolute -left-[30px] top-1.5 h-2.5 w-2.5 rounded-full bg-cyanx shadow-[0_0_24px_rgba(34,211,238,.42)]"></span>
+              <p class="font-mono text-xs text-cyanx/70">2022.07 - 至今</p>
+              <h3 class="mt-2 text-lg font-medium text-white">广联达科技股份有限公司 · 人才发展专业经理</h3>
+              <p class="mt-2 text-sm leading-7 text-slate-400">含分公司 HRBP 轮岗经历。</p>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[30px] top-1.5 h-2.5 w-2.5 rounded-full bg-cyanx shadow-[0_0_24px_rgba(34,211,238,.42)]"></span>
+              <p class="font-mono text-xs text-cyanx/70">2019/09 - 2022/07</p>
+              <h3 class="mt-2 text-lg font-medium text-white">中国矿业大学（北京） · 企业管理（硕士）</h3>
+              <p class="mt-2 text-sm leading-7 text-slate-400">年级排名 5/92。</p>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[30px] top-1.5 h-2.5 w-2.5 rounded-full bg-cyanx shadow-[0_0_24px_rgba(34,211,238,.42)]"></span>
+              <p class="font-mono text-xs text-cyanx/70">2014/09 - 2018/07</p>
+              <h3 class="mt-2 text-lg font-medium text-white">河南理工大学 · 人力资源管理（本科）</h3>
+              <p class="mt-2 text-sm leading-7 text-slate-400">专业排名 6/95。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="mx-auto max-w-6xl px-5 py-20 sm:px-6">
+      <div class="mb-14 max-w-3xl">
+        <p class="text-xs font-medium uppercase tracking-[.32em] text-cyanx/70">Signature Projects</p>
+        <h2 class="mt-4 text-3xl font-semibold tracking-[-.025em] text-white sm:text-4xl">重点项目经验</h2>
+      </div>
+
+      <div class="space-y-8">
+        <article class="glass overflow-hidden rounded-[2rem] p-6 sm:p-8">
+          <div class="grid gap-10 lg:grid-cols-[.78fr_1.22fr]">
+            <div>
+              <p class="font-mono text-xs text-cyanx/60">项目 01</p>
+              <h3 class="mt-4 text-2xl font-bold tracking-[-.02em] text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">干部习武</h3>
+              <p class="mt-5 text-sm leading-7 text-slate-400">首创业务部门战队制，将运动参与与团队荣誉绑定，形成可持续的干部健康文化运营机制。</p>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-3">
+              <div class="rounded-2xl border border-white/10 bg-white/[.035] p-5">
+                <p class="text-sm font-medium text-white">运营机制</p>
+                <p class="mt-3 text-sm leading-7 text-slate-400">战队制绑定团队荣誉，激活干部群体持续参与。</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/[.035] p-5">
+                <p class="text-sm font-medium text-white">AI 提效</p>
+                <p class="mt-3 text-sm leading-7 text-slate-400">自动化清洗 43 支战队数据，提效 9 倍，视觉物料 0 成本。</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/[.035] p-5">
+                <p class="text-sm font-medium text-white">硬核数据</p>
+                <p class="mt-3 text-sm leading-7 text-slate-400">全年运动里程破 22 万公里，目标完成率 115.7%。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="glass overflow-hidden rounded-[2rem] p-6 sm:p-8">
+          <div class="grid gap-10 lg:grid-cols-[.78fr_1.22fr]">
+            <div>
+              <p class="font-mono text-xs text-cyanx/60">项目 02</p>
+              <h3 class="mt-4 text-2xl font-bold tracking-[-.02em] text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">共学共创</h3>
+              <p class="mt-5 text-sm leading-7 text-slate-400">聚焦近万名员工的 AI 实战落地，构建“学练评赛”闭环，推动智能体生态形成。</p>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-3">
+              <div class="rounded-2xl border border-white/10 bg-white/[.035] p-5">
+                <p class="text-sm font-medium text-white">业务难题</p>
+                <p class="mt-3 text-sm leading-7 text-slate-400">解决万人作业评审难题，让学习从认知走向真实应用。</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/[.035] p-5">
+                <p class="text-sm font-medium text-white">运营闭环</p>
+                <p class="mt-3 text-sm leading-7 text-slate-400">学练评赛联动，结合 AI 智能初评与优秀案例沉淀。</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/[.035] p-5">
+                <p class="text-sm font-medium text-white">硬核数据</p>
+                <p class="mt-3 text-sm leading-7 text-slate-400">23,576 学习人次，沉淀 1,194 份案例，创建 1,000+ 智能体。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="glass overflow-hidden rounded-[2rem] p-6 sm:p-8">
+          <div class="grid gap-10 lg:grid-cols-[.78fr_1.22fr]">
+            <div>
+              <p class="font-mono text-xs text-cyanx/60">项目 03</p>
+              <h3 class="mt-4 text-2xl font-bold tracking-[-.02em] text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">项目经理培养</h3>
+              <p class="mt-5 text-sm leading-7 text-slate-400">面向 110+ 中层后备，将培养目标从“完成培训”转向“解决业务痛点”。</p>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-3">
+              <div class="rounded-2xl border border-white/10 bg-white/[.035] p-5">
+                <p class="text-sm font-medium text-white">培养对象</p>
+                <p class="mt-3 text-sm leading-7 text-slate-400">覆盖 110+ 中层后备，聚焦关键岗位梯队建设。</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/[.035] p-5">
+                <p class="text-sm font-medium text-white">项目机制</p>
+                <p class="mt-3 text-sm leading-7 text-slate-400">训战评一体，引入人才评估机制，连接业务场景。</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/[.035] p-5">
+                <p class="text-sm font-medium text-white">硬核数据</p>
+                <p class="mt-3 text-sm leading-7 text-slate-400">满意度创同类新高 4.985/5，完训率超 90%。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="honors" class="py-20">
+      <div class="mx-auto max-w-6xl px-5 sm:px-6">
+        <p class="text-xs font-medium uppercase tracking-[.32em] text-cyanx/70">Recognition</p>
+        <h2 class="mt-4 text-3xl font-semibold tracking-[-.025em] text-white sm:text-4xl">荣誉奖项</h2>
+      </div>
+      <div class="marquee-wrap mt-10 overflow-hidden">
+        <div class="marquee-track flex gap-3 px-5">
+          <span class="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm text-slate-200 shadow-glow backdrop-blur-md transition-colors hover:bg-white/10">年度优秀项目</span>
+          <span class="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm text-slate-200 shadow-glow backdrop-blur-md transition-colors hover:bg-white/10">半年度优秀个人</span>
+          <span class="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm text-slate-200 shadow-glow backdrop-blur-md transition-colors hover:bg-white/10">季度标杆</span>
+          <span class="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm text-slate-200 shadow-glow backdrop-blur-md transition-colors hover:bg-white/10">月度标杆</span>
+          <span class="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm text-slate-200 shadow-glow backdrop-blur-md transition-colors hover:bg-white/10">集团认证讲师</span>
+          <span class="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm text-slate-200 shadow-glow backdrop-blur-md transition-colors hover:bg-white/10">国家励志奖学金</span>
+          <span class="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm text-slate-200 shadow-glow backdrop-blur-md transition-colors hover:bg-white/10">校级优秀毕业生</span>
+          <span class="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm text-slate-200 shadow-glow backdrop-blur-md transition-colors hover:bg-white/10">研究生一等学业奖学金</span>
+          <span class="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm text-slate-200 shadow-glow backdrop-blur-md transition-colors hover:bg-white/10" aria-hidden="true">年度优秀项目</span>
+          <span class="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm text-slate-200 shadow-glow backdrop-blur-md transition-colors hover:bg-white/10" aria-hidden="true">半年度优秀个人</span>
+          <span class="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm text-slate-200 shadow-glow backdrop-blur-md transition-colors hover:bg-white/10" aria-hidden="true">季度标杆</span>
+          <span class="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm text-slate-200 shadow-glow backdrop-blur-md transition-colors hover:bg-white/10" aria-hidden="true">月度标杆</span>
+          <span class="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm text-slate-200 shadow-glow backdrop-blur-md transition-colors hover:bg-white/10" aria-hidden="true">集团认证讲师</span>
+          <span class="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm text-slate-200 shadow-glow backdrop-blur-md transition-colors hover:bg-white/10" aria-hidden="true">国家励志奖学金</span>
+          <span class="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm text-slate-200 shadow-glow backdrop-blur-md transition-colors hover:bg-white/10" aria-hidden="true">校级优秀毕业生</span>
+          <span class="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm text-slate-200 shadow-glow backdrop-blur-md transition-colors hover:bg-white/10" aria-hidden="true">研究生一等学业奖学金</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="gallery" class="mx-auto max-w-6xl px-5 py-20 sm:px-6">
+      <div class="mb-12">
+        <p class="text-xs font-medium uppercase tracking-[.32em] text-cyanx/70">Visual Proof</p>
+        <h2 class="mt-4 text-3xl font-semibold tracking-[-.025em] text-white sm:text-4xl">成果可视化</h2>
+      </div>
+      <div class="columns-2 gap-4 space-y-4 md:columns-3 lg:columns-4">
+        <figure class="prompt-card group relative mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
+          <img src="./images/1.jpg" alt="AI 视觉成果 1" class="w-full object-cover transition-all duration-500 group-hover:-translate-y-2 group-hover:scale-105 group-hover:shadow-2xl group-hover:shadow-cyan-500/30" />
+          <figcaption class="absolute inset-0 flex items-end bg-black/60 p-4 opacity-0 backdrop-blur-md transition-all duration-500 group-hover:opacity-100">
+            <code class="prompt-code font-mono text-xs leading-5 text-green-400">&gt; Model: Anygen V3 | Prompt: A cyberpunk style marathon poster, 1000 people running, neon blue lighting --ar 9:16</code>
+          </figcaption>
+        </figure>
+        <figure class="prompt-card group relative mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
+          <img src="./images/2.jpg" alt="AI 视觉成果 2" class="w-full object-cover transition-all duration-500 group-hover:-translate-y-2 group-hover:scale-105 group-hover:shadow-2xl group-hover:shadow-cyan-500/30" />
+          <figcaption class="absolute inset-0 flex items-end bg-black/60 p-4 opacity-0 backdrop-blur-md transition-all duration-500 group-hover:opacity-100">
+            <code class="prompt-code font-mono text-xs leading-5 text-green-400">&gt; Model: Anygen V3 | Prompt: executive wellness campaign key visual, team honor, blue glass light, premium dark poster --ar 4:5</code>
+          </figcaption>
+        </figure>
+        <figure class="prompt-card group relative mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
+          <img src="./images/3.jpg" alt="AI 视觉成果 3" class="w-full object-cover transition-all duration-500 group-hover:-translate-y-2 group-hover:scale-105 group-hover:shadow-2xl group-hover:shadow-cyan-500/30" />
+          <figcaption class="absolute inset-0 flex items-end bg-black/60 p-4 opacity-0 backdrop-blur-md transition-all duration-500 group-hover:opacity-100">
+            <code class="prompt-code font-mono text-xs leading-5 text-green-400">&gt; Model: Anygen V3 | Prompt: AI learning hackathon poster, business agents, futuristic dashboard, cyan glow, clean typography --ar 16:9</code>
+          </figcaption>
+        </figure>
+        <figure class="prompt-card group relative mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
+          <img src="./images/4.jpg" alt="AI 视觉成果 4" class="w-full object-cover transition-all duration-500 group-hover:-translate-y-2 group-hover:scale-105 group-hover:shadow-2xl group-hover:shadow-cyan-500/30" />
+          <figcaption class="absolute inset-0 flex items-end bg-black/60 p-4 opacity-0 backdrop-blur-md transition-all duration-500 group-hover:opacity-100">
+            <code class="prompt-code font-mono text-xs leading-5 text-green-400">&gt; Model: Anygen V3 | Prompt: HR digital transformation visual, knowledge graph, training roadmap, elegant black cyan style --ar 1:1</code>
+          </figcaption>
+        </figure>
+        <figure class="prompt-card group relative mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
+          <img src="./images/5.jpg" alt="AI 视觉成果 5" class="w-full object-cover transition-all duration-500 group-hover:-translate-y-2 group-hover:scale-105 group-hover:shadow-2xl group-hover:shadow-cyan-500/30" />
+          <figcaption class="absolute inset-0 flex items-end bg-black/60 p-4 opacity-0 backdrop-blur-md transition-all duration-500 group-hover:opacity-100">
+            <code class="prompt-code font-mono text-xs leading-5 text-green-400">&gt; Model: Anygen V3 | Prompt: HR digital transformation visual, knowledge graph, training roadmap, elegant black cyan style --ar 1:1</code>
+          </figcaption>
+        </figure>
+        <figure class="prompt-card group relative mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
+          <img src="./images/6.jpg" alt="AI 视觉成果 6" class="w-full object-cover transition-all duration-500 group-hover:-translate-y-2 group-hover:scale-105 group-hover:shadow-2xl group-hover:shadow-cyan-500/30" />
+          <figcaption class="absolute inset-0 flex items-end bg-black/60 p-4 opacity-0 backdrop-blur-md transition-all duration-500 group-hover:opacity-100">
+            <code class="prompt-code font-mono text-xs leading-5 text-green-400">&gt; Model: Anygen V3 | Prompt: HR digital transformation visual, knowledge graph, training roadmap, elegant black cyan style --ar 1:1</code>
+          </figcaption>
+        </figure>
+        <figure class="prompt-card group relative mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
+          <img src="./images/7.jpg" alt="AI 视觉成果 7" class="w-full object-cover transition-all duration-500 group-hover:-translate-y-2 group-hover:scale-105 group-hover:shadow-2xl group-hover:shadow-cyan-500/30" />
+          <figcaption class="absolute inset-0 flex items-end bg-black/60 p-4 opacity-0 backdrop-blur-md transition-all duration-500 group-hover:opacity-100">
+            <code class="prompt-code font-mono text-xs leading-5 text-green-400">&gt; Model: Anygen V3 | Prompt: HR digital transformation visual, knowledge graph, training roadmap, elegant black cyan style --ar 1:1</code>
+          </figcaption>
+        </figure>
+        <figure class="prompt-card group relative mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
+          <img src="./images/8.jpg" alt="AI 视觉成果 8" class="w-full object-cover transition-all duration-500 group-hover:-translate-y-2 group-hover:scale-105 group-hover:shadow-2xl group-hover:shadow-cyan-500/30" />
+          <figcaption class="absolute inset-0 flex items-end bg-black/60 p-4 opacity-0 backdrop-blur-md transition-all duration-500 group-hover:opacity-100">
+            <code class="prompt-code font-mono text-xs leading-5 text-green-400">&gt; Model: Anygen V3 | Prompt: HR digital transformation visual, knowledge graph, training roadmap, elegant black cyan style --ar 1:1</code>
+          </figcaption>
+        </figure>
+        <figure class="prompt-card group relative mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10">
+          <img src="./images/9.jpg" alt="AI 视觉成果 9" class="w-full object-cover transition-all duration-500 group-hover:-translate-y-2 group-hover:scale-105 group-hover:shadow-2xl group-hover:shadow-cyan-500/30" />
+          <figcaption class="absolute inset-0 flex items-end bg-black/60 p-4 opacity-0 backdrop-blur-md transition-all duration-500 group-hover:opacity-100">
+            <code class="prompt-code font-mono text-xs leading-5 text-green-400">&gt; Model: Anygen V3 | Prompt: HR digital transformation visual, knowledge graph, training roadmap, elegant black cyan style --ar 1:1</code>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+  </main>
+
+  <footer class="relative z-10 mx-auto max-w-6xl px-5 py-16 text-center text-base leading-8 tracking-wide text-slate-300 md:text-lg">
+    杨慧 | 人才发展（TD）/学习发展（LD）专业经理 | 18811101980 | yanghhuuii@163.com
+  </footer>
+
+  <div class="fixed bottom-4 right-4 z-[70] sm:bottom-6 sm:right-6">
+    <section id="aiChatPanel" class="chat-pop is-hidden mb-3 w-[calc(100vw-2rem)] max-w-sm overflow-hidden rounded-3xl border border-cyan-300/20 bg-slate-950/82 shadow-glow backdrop-blur-xl">
+      <div class="flex items-center justify-between border-b border-white/10 px-4 py-3">
+        <div>
+          <p class="text-sm font-semibold text-white">YangHui.AI - 智能面试助理</p>
+          <p class="mt-1 font-mono text-[10px] text-cyanx">快速解析 AI+HR 实战亮点</p>
+        </div>
+        <button id="closeChat" class="grid h-8 w-8 place-items-center rounded-full border border-white/10 bg-white/[.04] text-cyanx hover:bg-cyan-300/[.12]" type="button" aria-label="关闭">×</button>
+      </div>
+      <div id="chatMessages" class="max-h-[330px] min-h-[240px] space-y-3 overflow-y-auto p-4 text-xs leading-6 text-slate-300"></div>
+      <div id="chatPrompts" class="hidden border-t border-white/10 p-3">
+        <div class="flex flex-wrap gap-2">
+          <button class="chat-prompt rounded-full border border-cyan-300/25 bg-cyan-300/[.07] px-3 py-1.5 text-[11px] text-cyanx hover:bg-cyan-300/[.14]" data-question="core">她的核心竞争力？</button>
+          <button class="chat-prompt rounded-full border border-cyan-300/25 bg-cyan-300/[.07] px-3 py-1.5 text-[11px] text-cyanx hover:bg-cyan-300/[.14]" data-question="cocreation">“共学共创”落地细节</button>
+          <button class="chat-prompt rounded-full border border-cyan-300/25 bg-cyan-300/[.07] px-3 py-1.5 text-[11px] text-cyanx hover:bg-cyan-300/[.14]" data-question="zero">零成本视觉怎么做的？</button>
+        </div>
+      </div>
+    </section>
+    <button id="openChat" class="assistant-ping breathe relative rounded-full border border-cyan-300/35 bg-slate-950/88 px-4 py-3 text-xs font-semibold text-cyanx shadow-glow backdrop-blur-xl transition hover:scale-[1.02] sm:px-5" type="button" aria-label="打开智能面试助理">
+      <span class="relative z-10">💬 体验：杨慧的 AI 助理</span>
+    </button>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let spotlightFrame = null;
+      let pendingMouse = { x: window.innerWidth / 2, y: window.innerHeight * 0.12 };
+
+      function updateSpotlight() {
+        document.documentElement.style.setProperty('--mouse-x', `${pendingMouse.x}px`);
+        document.documentElement.style.setProperty('--mouse-y', `${pendingMouse.y}px`);
+        spotlightFrame = null;
+      }
+
+      window.addEventListener('mousemove', (event) => {
+        pendingMouse = { x: event.clientX, y: event.clientY };
+        if (!spotlightFrame) {
+          spotlightFrame = requestAnimationFrame(updateSpotlight);
+        }
+      }, { passive: true });
+
+      const revealTargets = document.querySelectorAll('#strength article, #projects article, #gallery figure');
+      revealTargets.forEach((element, index) => {
+        element.classList.add('reveal');
+        element.style.transitionDelay = `${Math.min(index % 4, 3) * 90}ms`;
+      });
+
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.16,
+        rootMargin: '0px 0px -8% 0px'
+      });
+
+      revealTargets.forEach((element) => revealObserver.observe(element));
+
+      const counters = document.querySelectorAll('.counter');
+      const counterDuration = 1000;
+      const easeOutCubic = (value) => 1 - Math.pow(1 - value, 3);
+
+      counters.forEach((counter) => {
+        const target = Number(counter.dataset.target || 0);
+        const startTime = performance.now();
+
+        function updateCounter(now) {
+          const progress = Math.min((now - startTime) / counterDuration, 1);
+          const eased = easeOutCubic(progress);
+          counter.textContent = Math.round(target * eased);
+
+          if (progress < 1) {
+            requestAnimationFrame(updateCounter);
+          } else {
+            counter.textContent = target;
+            const counterShell = counter.closest('p');
+            if (counterShell) {
+              counterShell.classList.add('counter-pulse');
+              setTimeout(() => counterShell.classList.remove('counter-pulse'), 760);
+            }
+          }
+        }
+
+        requestAnimationFrame(updateCounter);
+      });
+
+      const cleanButton = document.getElementById('cleanButton');
+      const dataBox = document.getElementById('dataBox');
+      const messyData = document.getElementById('messyData');
+      const cleanTable = document.getElementById('cleanTable');
+      const cleanStatus = document.getElementById('cleanStatus');
+
+      cleanButton.addEventListener('click', () => {
+        dataBox.classList.add('is-changing');
+        cleanButton.disabled = true;
+        cleanButton.textContent = '正在清洗原始数据...';
+        setTimeout(() => {
+          messyData.classList.add('hidden');
+          cleanTable.classList.remove('hidden');
+          cleanStatus.classList.remove('hidden');
+          dataBox.classList.remove('is-changing');
+          cleanButton.textContent = '✓ 清洗完成：已生成标准数据表';
+          cleanButton.classList.remove('breathe');
+        }, 520);
+      });
+
+      const terminalOutput = document.getElementById('terminalOutput');
+      const terminalButtons = document.querySelectorAll('.terminal-tool');
+      let terminalTimer = null;
+      const terminalScripts = {
+        deepseek: [
+          '[Sys] 接入干部健康运营模块...',
+          '[Log] 读取 43 支战队原始运动里程数据...',
+          '[Log] 自动生成并运行 Python 数据清洗脚本...',
+          '[Output] 剔除无效数据，格式化完成。提效 900%（传统耗时天级 -> 现耗时秒级）。'
+        ],
+        anygen: [
+          '[Sys] 唤醒视觉引擎...',
+          '[Log] 渲染 5月17日 春季 MINI 马拉松海报...',
+          '[Log] 渲染 干部习武全年健康运营主 KV...',
+          '[Output] 设计验收通过。外采成本：0 元。'
+        ],
+        gemini: [
+          '[Sys] 启动项目策划辅助模式...',
+          '[Log] 自动生成 6月 HR 内部赋能分享《我常用的 AI 武器库》逐字稿...',
+          '[Log] 规划 7月 DOD26 项目 Day 2 的 AI Mini Hackathon 赛制细则...',
+          '[Output] 逻辑树构建完毕，方案已保存。'
+        ],
+        workbuddy: [
+          '[Sys] 追踪集团 AI 赋能实战转化进度...',
+          '[Log] 扫描“学、练、评、赛”闭环数据...',
+          '[Output] 当前学习总人次：23,576。1000+ 智能体矩阵运行良好。'
+        ]
+      };
+
+      function terminalStamp() {
+        return new Date().toLocaleTimeString('zh-CN', { hour12: false });
+      }
+
+      function runTerminal(lines) {
+        clearTimeout(terminalTimer);
+        terminalOutput.classList.remove('terminal-cursor');
+        terminalOutput.textContent = '';
+        let lineIndex = 0;
+        let charPosition = 0;
+        let output = '';
+
+        function typeLine() {
+          const currentLine = lines[lineIndex];
+          const prefix = `[${terminalStamp()}] `;
+          terminalOutput.textContent = output + prefix + currentLine.slice(0, charPosition);
+          charPosition++;
+          if (charPosition <= currentLine.length) {
+            terminalTimer = setTimeout(typeLine, 22);
+            return;
+          }
+          output += prefix + currentLine + '\n';
+          lineIndex++;
+          charPosition = 0;
+          if (lineIndex < lines.length) {
+            terminalTimer = setTimeout(typeLine, 360);
+          } else {
+            terminalOutput.classList.add('terminal-cursor');
+          }
+        }
+
+        typeLine();
+      }
+
+      terminalButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          terminalButtons.forEach((item) => item.classList.remove('bg-cyan-300/15', 'text-white'));
+          button.classList.add('bg-cyan-300/15', 'text-white');
+          runTerminal(terminalScripts[button.dataset.tool]);
+        });
+      });
+
+      const chatPanel = document.getElementById('aiChatPanel');
+      const openChat = document.getElementById('openChat');
+      const closeChat = document.getElementById('closeChat');
+      const chatMessages = document.getElementById('chatMessages');
+      const chatPromptsBox = document.getElementById('chatPrompts');
+      const chatPrompts = document.querySelectorAll('.chat-prompt');
+      const companyName = new URLSearchParams(window.location.search).get('company');
+      let chatTimer = null;
+      let chatInitialized = false;
+
+      const chatAnswers = {
+        core: '杨慧的核心竞争力是“人才发展专业能力 + 一线业务理解 + AI 工具链实战”的复合组合。她既能从 COE 视角设计培养体系、项目机制和组织能力模型，也能基于 HRBP 轮岗经验理解业务现场真实痛点。更关键的是，她能把 AI 从概念转化为业务结果：数据清洗提效 9 倍、视觉物料 0 成本生成、共学共创推动 23,576 学习人次并创建 1000+ 智能体。',
+        cocreation: '杨慧避开空洞的战略宏观推演，专注于业务推广与 AI 实战转化，最终构建了学练评赛闭环，推动近万名员工落地，创建 1000+ 智能体。项目过程中，她通过 AI 智能初评解决万人作业评审难题，并沉淀 1,194 份业务案例，让隐性知识显性化，形成可复用的组织资产。',
+        zero: '零成本视觉设计来自她对 Anygen、即梦等 AI 视觉工具的系统化调教。她会把项目目标、传播场景、视觉风格、关键词和构图要求拆成可执行提示词，再持续迭代主 KV、跑团海报和活动物料，最终直接减少外部采购成本，同时保证项目传播节奏足够敏捷。'
+      };
+
+      function appendChatMessage(text, role) {
+        const message = document.createElement('div');
+        message.className = role === 'user'
+          ? 'ml-auto max-w-[86%] rounded-2xl border border-white/10 bg-white/[.06] p-3 text-slate-100'
+          : 'max-w-[92%] rounded-2xl border border-cyan-300/15 bg-cyan-300/[.06] p-3 text-slate-300';
+        message.textContent = text;
+        chatMessages.appendChild(message);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        return message;
+      }
+
+      function typeChatAnswer(text, onDone) {
+        clearTimeout(chatTimer);
+        const message = appendChatMessage('', 'assistant');
+        let index = 0;
+
+        function typeNext() {
+          message.textContent = text.slice(0, index);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+          index++;
+          if (index <= text.length) {
+            chatTimer = setTimeout(typeNext, 24);
+          } else if (onDone) {
+            onDone();
+          }
+        }
+
+        typeNext();
+      }
+
+      function initializeChat() {
+        if (chatInitialized) return;
+        chatInitialized = true;
+        chatMessages.innerHTML = '';
+        chatPromptsBox.classList.add('hidden');
+
+        if (companyName) {
+          typeChatAnswer(`> [System] 检测到来自【${companyName}】的访问。正在为您匹配杨慧在组织敏捷赋能方面的实战案例...`, () => {
+            setTimeout(() => chatPromptsBox.classList.remove('hidden'), 500);
+          });
+        } else {
+          appendChatMessage('你好，我是杨慧的 AI 面试助理。你可以快速了解她在 AI+HR、项目运营、数据提效方面的真实成果。', 'assistant');
+          chatPromptsBox.classList.remove('hidden');
+        }
+      }
+
+      openChat.addEventListener('click', () => {
+        chatPanel.classList.toggle('is-hidden');
+        if (!chatPanel.classList.contains('is-hidden')) {
+          initializeChat();
+        }
+      });
+
+      closeChat.addEventListener('click', () => {
+        chatPanel.classList.add('is-hidden');
+      });
+
+      chatPrompts.forEach((button) => {
+        button.addEventListener('click', () => {
+          appendChatMessage(button.textContent, 'user');
+          typeChatAnswer(chatAnswers[button.dataset.question]);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
